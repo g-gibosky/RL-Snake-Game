@@ -31,48 +31,69 @@ import pandas as pd
 
 #   return ep_len_mean, prop_loop
 
-path = 'data\\Q_learning\\step_data\\'
-loop_files = os.listdir(f"{path}loops")
-print(loop_files)
-for file in loop_files:
-    with open(f"{path}\\loops\\{file}", 'rb') as fp:
-        loop_values = pickle.load(fp)
-        # loop_ratios, steps = 
-    
-# 'state_action_best_q_learning_1000_0_0_loop_interations
+path = 'data\\Q_learning\\'
 
+# loop_files = os.listdir(f"{path}loop_steps")
+# print(loop_files)
+# steps = []
+# loop_ratios = []
+# for file in loop_files:
+#     with open(f"{path}loop_steps\\{file}", 'rb') as fp:
+#         step, loop_ratio =  pickle.load(fp)
+#         steps.append(step)
+#         loop_ratios.append(loop_ratio)
 
+# group_size = 4
+# avg_steps = [sum(steps[i:i+group_size])/group_size for i in range(0, len(steps), group_size)]
+# avg_loops = [sum(loop_ratios[i:i+group_size])/group_size for i in range(0, len(loop_ratios), group_size)]
+
+# x_values = [100, 500, 1000, 5000]
+
+# print(steps, loop_ratios)
 # fig, axs = plt.subplots(1, 2, figsize=(10, 4))
-# sns.lineplot(x = [100, 500, 1000, 5000], y = loop_ratios, ax = axs[0]).set_xscale("log")
+# sns.lineplot(x=x_values, y=avg_loops, ax=axs[0]).set_xscale("log")
 # axs[0].set_title('Porcentagem de Loops Variando N0 (log scale)')
 # axs[0].set_ylabel('% de Loops')
+# axs[0].set_xlabel('Parâmetro N0')
 
-# sns.lineplot(x = [100, 500, 1000, 5000], y = steps, ax = axs[1]).set_xscale("log")
+# sns.lineplot(x=x_values, y=avg_steps, ax=axs[1]).set_xscale("log")
 # axs[1].set_title('Número Médio de passos Variando N0 (log scale)')
 # axs[1].set_ylabel('Tamanho médio do episódio')
-
-# axs[0].set_xlabel('Parâmetro N0')
 # axs[1].set_xlabel('Parâmetro N0')
 
+# plt.show(block=True)
 
-# for file in files:
-#   with open(path+'\\'+file, 'rb') as fp:
-#     value_function = pickle.load(fp)
 
-#   #value_function = agent.value_function
-#   matrix_values = np.zeros((19, 19))
-#   for k in list(value_function.keys()):
-#     x = int(k[0][1])
-#     y = int(k[1][0])
+def process_and_plot(data, file):
+    heatmap = np.zeros((10, 10))  # Assuming coordinates range from 0 to 9
 
-#     matrix_values[x+9][y+9] = value_function[k]
+    for (coords, _), value in data.items():
+        x, y = coords
+        heatmap[x, y] += value  # Summing up values; you can also use np.mean() for averaging
 
-#   matrix_values[9][9] = 0
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(heatmap, cmap='viridis', fmt=".2f")
+    # sns.heatmap(heatmap, cmap='viridis', fmt=".2f",  annot=True,)
+    plt.title(f'Reward: {file}')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.savefig(f"graph_{file}.jpeg")
+    plt.show()
 
-#   sns.heatmap(matrix_values, ax = axs[i], cmap="crest")#, annot = True)
-#   axs[i].invert_yaxis()
-#   axs[i].set_xticks(range(19))
-#   axs[i].set_xticklabels([-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9])
-#   axs[i].set_yticks(range(19))
-#   axs[i].set_yticklabels([-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9])
-#   axs[i].set_title(f'Reward {n}')
+
+# reward_state_path = f"{path}reward_state_actions\\"
+# reward_state_action = os.listdir(reward_state_path)
+# for file in reward_state_action:
+#     print(file)
+#     with open(f"{reward_state_path}{file}", 'rb') as fp:
+#         value_function = pickle.load(fp)
+#         process_and_plot(value_function, file)
+
+steps_state_path = f"{path}steps_state_actions\\"
+steps_state_action = os.listdir(steps_state_path)
+for file in steps_state_action:
+    print(file)
+    with open(f"{steps_state_path}{file}", 'rb') as fp:
+        value_function = pickle.load(fp)
+        print(value_function)
+        process_and_plot(value_function, file)
