@@ -54,22 +54,21 @@ path = 'data\\Q_learning\\'
 #         loop_ratios.append(loop_ratio)
 
 
-current_path = "reward_state_actions"
-reward_state_path = f"{path}{current_path}\\"
-print(f"reward_state_path: {reward_state_path}")
-reward_state_action = os.listdir(reward_state_path)
-print(f"Files: {reward_state_action}")
-for file in reward_state_action[1:]:
-    print(file)
-    with open(f"{reward_state_path}{file}", 'rb') as fp:
+# current_path = "reward_state_actions"
+# reward_state_path = f"{path}{current_path}\\"
+# print(f"reward_state_path: {reward_state_path}")
+# reward_state_action = os.listdir(reward_state_path)
+# print(f"Files: {reward_state_action}")
+# for file in reward_state_action[1:]:
+#     print(file)
+#     with open(f"{reward_state_path}{file}", 'rb') as fp:
+#         value_function = pickle.load(fp)
+#         process_and_plot(value_function, file, current_path)
+
+current_path = "steps_state_actions"
+steps_state_path = f"{path}{current_path}\\"
+steps_state_action = os.listdir(steps_state_path)
+for file in steps_state_action[1:]:
+    with open(f"{steps_state_path}{file}", 'rb') as fp:
         value_function = pickle.load(fp)
         process_and_plot(value_function, file, current_path)
-
-# steps_state_path = f"{path}steps_state_actions/"
-# steps_state_action = os.listdir(steps_state_path)
-# for file in steps_state_action:
-#     #print(file)
-#     with open(f"{steps_state_path}{file}", 'rb') as fp:
-#         value_function = pickle.load(fp)
-#         #print(value_function)
-#         process_and_plot(value_function, file)
