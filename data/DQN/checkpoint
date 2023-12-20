@@ -1,0 +1,2 @@
+model_checkpoint_path: "weights_dqn_agent_32_10_10"
+all_model_checkpoint_paths: "weights_dqn_agent_32_10_10"
