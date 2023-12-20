@@ -130,7 +130,7 @@ class DQNAgent:
 
 
 class SnakeGame():
-  def __init__(self, delay_time=0.1, reward_shape=(0, 99)):
+  def __init__(self, delay_time=0.00000001, reward_shape=(0, 99)):
       pygame.init()
       self.screen = pygame.display.set_mode(
           (GRID_WIDTH * GRID_SIZE, GRID_HEIGHT * GRID_SIZE))
@@ -707,7 +707,7 @@ def run_q_tests(epis_size, stochastic, test_game, percentage=0.0):
       f"Treinamento em ambiente: { 'Partialy' if q_learning.stochastic == 1 else 'non-stochastic'}")
   q_learning.epi_size = epis_size
   q_learning.train(epis_size, sarsa=False)
-  ep_len_mean, prop_loop = test_q_policy(q_learning, n_iter=5)
+  ep_len_mean, prop_loop = test_q_policy(q_learning)
   plot_steps(q_learning.step_per_episode, stochastic,epis_size,ep_len_mean, percentage)
   print(f"ep_len_mean: {ep_len_mean}")
 
@@ -742,10 +742,30 @@ def plot_steps(step_per_episodes, stochastic,epis_size,ep_len_mean, stochastic_p
    plt.legend()
    plt.grid(True)
   #  plt.show()
-   plt.savefig(f'./state_action_best_q_learning_{epis_size}_{stochastic}_{stochastic_percentage}_runs.png')
+   plt.savefig(f'./data/state_action_best_q_learning_{epis_size}_{stochastic}_{stochastic_percentage}_runs.png')
 
+def run_q_tests_reward(epis_size, test_game, reward):
+ q_learning = QLearning(test_game)
+ q_learning.train(epis_size, sarsa = False)
+ ep_len_mean, prop_loop = test_q_policy(q_learning)
+ plot_steps_reward(q_learning.step_per_episode, ep_len_mean, reward)
+
+def plot_steps_reward(step_per_episodes, ep_len_mean, reward_shape):
+
+   plt.figure(figsize=(10, 6))
+   plt.plot(step_per_episodes, label='Steps per Episode')
+   plt.title(f'Steps per Episode - Incentivo: {reward_shape[1]} - Punição: {reward_shape[0]}')
+   plt.xlabel('Episode Number')
+   plt.ylabel('Steps')
+   plt.axhline(y=ep_len_mean, color='r', linestyle='--', label=f'Mean Steps Best: {ep_len_mean:.2f}')
+   plt.legend()
+   plt.grid(True)
+  #  plt.show()
+   plt.savefig(f'./data/state_action_best_q_learning_{reward_shape[1]}_{reward_shape[0]}_runs.png')
+   
 test_game = SnakeGame()
-episode_size = [100, 500, 1000, 2000]
+episode_size = [100, 500, 1000, 5000]
+percentages = [0.2, 0.5, 0.9]
 percentages = [0.2, 0.5, 0.9]
 # run_q_tests(5000, 0, test_game)
 for stochastic in range(0, 2):
@@ -756,6 +776,16 @@ for stochastic in range(0, 2):
        run_q_tests(episodes, stochastic, test_game, percentage)
    else:
      run_q_tests(episodes, stochastic, test_game)
+     
+     
+episode_size = [100, 500, 1000, 5000]
+reward_shape = [(-1, 99), (0, 99), (-10,99)]
+for reward in reward_shape:
+ test_game = SnakeGame(reward_shape=reward)
+ for episodes in episode_size:
+     run_q_tests_reward(episodes, test_game, reward)
+
+
 # agent = DQNAgent()
 # batch_size = 32  # Define an appropriate batch size
 # game = SnakeGame()
